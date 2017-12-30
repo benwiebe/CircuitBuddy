@@ -1,14 +1,5 @@
 'use strict';
 
-/**
- * This sample demonstrates a simple skill built with the Amazon Alexa Skills Kit.
- * The Intent Schema, Custom Slots, and Sample Utterances for this skill, as well as
- * testing instructions are located at http://amzn.to/1LzFrj6
- *
- * For additional samples, visit the Alexa Skills Kit Getting Started guide at
- * http://amzn.to/1LGWsLG
- */
-
 // -------------------------------- Constants ------------------------------------
 const BANDCOLORS = [
                     "black",
@@ -88,7 +79,7 @@ function handleSessionEndRequest(callback) {
 function getResistorColors(intent, session, callback){
     const cardTitle = intent.name;
     const resistanceSlot = intent.slots.resistance;
-    let shouldEndSession = false;
+    let shouldEndSession = true;
     let speechOutput = '';
     let repromptText = '';
 
@@ -117,7 +108,47 @@ function getResistorColors(intent, session, callback){
 }
 
 function getResistorValue(intent, session, callback){
-    callback({}, buildSpeechletResponse(intent.name, "This is not supported yet. Try a different command.", "", false));
+    const cardTitle = intent.name;
+    let shouldEndSession = true;
+    let speechOutput = '';
+    let repromptText = '';
+    const color1Slot = intent.slots.colorone;
+    const color2Slot = intent.slots.colortwo;
+    const color3Slot = intent.slots.colorthree;
+    const toleranceSlot = intent.slots.tolerance;
+
+    if(color1Slot && color2Slot && color3Slot)
+    {
+        const color1 = parseInt(color1Slot.resolutions.resolutionsPerAuthority[0].values[0].value.id);
+        const color2 = parseInt(color2Slot.resolutions.resolutionsPerAuthority[0].values[0].value.id);
+        const color3 = parseInt(color3Slot.resolutions.resolutionsPerAuthority[0].values[0].value.id);
+        const tolerance = toleranceSlot.resolutions.resolutionsPerAuthority[0].values[0].value.id;
+        if(color1 && color2 && color3)
+        {
+            const resistance = (color1 + color2)*Math.pow(10, color3);
+            speechOutput = "That resistor has a value of " + resistance + " ohms";
+            if(tolerance)
+            {
+                speechOutput += " with a tolerance of " + tolerance + " percent.";
+            }
+            else
+            {
+                speechOutput += ".";
+            }
+        }
+        else
+        {
+            speechOutput = "Sorry, to calculate resistance I need to know all three color bands. You can also include a tolerance band.";
+            repromptText = "To calculate resistance, try saying, what is the resistance of brown black red.";
+        }
+    }
+    else
+    {
+        speechOutput = "Sorry, to calculate resistance I need to know all three color bands. You can also include a tolerance band.";
+        repromptText = "To calculate resistance, try saying, what is the resistance of brown black red.";
+    }
+
+    callback({}, buildSpeechletResponse(intent.name, speechOutput, repromptText, false));
 }
 
 /**
