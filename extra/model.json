@@ -1,0 +1,220 @@
+{
+  "languageModel": {
+    "types": [
+      {
+        "name": "BandColor",
+        "values": [
+          {
+            "id": "0",
+            "name": {
+              "value": "black",
+              "synonyms": []
+            }
+          },
+          {
+            "id": "1",
+            "name": {
+              "value": "brown",
+              "synonyms": []
+            }
+          },
+          {
+            "id": "2",
+            "name": {
+              "value": "red",
+              "synonyms": []
+            }
+          },
+          {
+            "id": "3",
+            "name": {
+              "value": "orange",
+              "synonyms": []
+            }
+          },
+          {
+            "id": "4",
+            "name": {
+              "value": "yellow",
+              "synonyms": []
+            }
+          },
+          {
+            "id": "5",
+            "name": {
+              "value": "green",
+              "synonyms": []
+            }
+          },
+          {
+            "id": "6",
+            "name": {
+              "value": "blue",
+              "synonyms": []
+            }
+          },
+          {
+            "id": "7",
+            "name": {
+              "value": "purple",
+              "synonyms": [
+                "violet"
+              ]
+            }
+          },
+          {
+            "id": "8",
+            "name": {
+              "value": "grey",
+              "synonyms": [
+                "gray"
+              ]
+            }
+          },
+          {
+            "id": "9",
+            "name": {
+              "value": "white",
+              "synonyms": []
+            }
+          }
+        ]
+      },
+      {
+        "name": "ToleranceColor",
+        "values": [
+          {
+            "id": "10",
+            "name": {
+              "value": "silver",
+              "synonyms": [
+                "grey",
+                "gray"
+              ]
+            }
+          },
+          {
+            "id": "5",
+            "name": {
+              "value": "gold",
+              "synonyms": [
+                "yellow"
+              ]
+            }
+          },
+          {
+            "id": "20",
+            "name": {
+              "value": "none",
+              "synonyms": [
+                "no tolerance",
+                "no tolerance band",
+                "no tolerance color"
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "intents": [
+      {
+        "name": "AMAZON.CancelIntent",
+        "samples": []
+      },
+      {
+        "name": "AMAZON.HelpIntent",
+        "samples": []
+      },
+      {
+        "name": "AMAZON.StopIntent",
+        "samples": []
+      },
+      {
+        "name": "GetResistorColors",
+        "samples": [
+          "what resistor has a value of {resistance}",
+          "I need a resistor of value {resistance}",
+          "what is the color code for a {resistance} ohm resistor",
+          "what resistor has a value of {resistance} ohms",
+          "I need a resistor with {resistance} ohms of resistance",
+          "I need a {resistance} ohm resistor"
+        ],
+        "slots": [
+          {
+            "name": "resistance",
+            "type": "AMAZON.NUMBER",
+            "samples": [
+              "{resistance} ohms",
+              "{resistance}"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "GetResistorValue",
+        "samples": [
+          "what is the resistance of {colorone} {colortwo} {colorthree}",
+          "what is the resistance of {colorone} {colortwo} {colorthree} {tolerance}",
+          "what is the value of {colorone} {colortwo} {colorthree} {tolerance}",
+          "what is the value of {colorone} {colortwo} {colorthree} ",
+          "I have a {colorone} {colortwo} {colorthree} resistor",
+          "{colorone} {colortwo} {colorthree} resistor",
+          "{colorone} {colortwo} {colorthree} {tolerance} resistor",
+          "I have a {colorone} {colortwo} {colorthree} {tolerance} resistor",
+          "what is a {colorone} {colortwo} {colorthree} {tolerance} resistor",
+          "what is a {colorone} {colortwo} {colorthree} resistor"
+        ],
+        "slots": [
+          {
+            "name": "colorone",
+            "type": "BandColor"
+          },
+          {
+            "name": "colortwo",
+            "type": "BandColor"
+          },
+          {
+            "name": "colorthree",
+            "type": "BandColor"
+          },
+          {
+            "name": "tolerance",
+            "type": "ToleranceColor"
+          }
+        ]
+      }
+    ],
+    "invocationName": "circuit buddy"
+  },
+  "prompts": [
+    {
+      "id": "Elicit.Intent-GetResistorColors.IntentSlot-resistance",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "To get a resistor color code I need to know what resistance you're looking for. For what resistance do you want me to compute the code?"
+        }
+      ]
+    }
+  ],
+  "dialog": {
+    "intents": [
+      {
+        "name": "GetResistorColors",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "resistance",
+            "type": "AMAZON.NUMBER",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-GetResistorColors.IntentSlot-resistance"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
