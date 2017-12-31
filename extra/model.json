@@ -81,6 +81,38 @@
         ]
       },
       {
+        "name": "SIPrefix",
+        "values": [
+          {
+            "id": "3",
+            "name": {
+              "value": "kilo",
+              "synonyms": [
+                "kill"
+              ]
+            }
+          },
+          {
+            "id": "6",
+            "name": {
+              "value": "mega",
+              "synonyms": [
+                "meg"
+              ]
+            }
+          },
+          {
+            "id": "9",
+            "name": {
+              "value": "giga",
+              "synonyms": [
+                "gig"
+              ]
+            }
+          }
+        ]
+      },
+      {
         "name": "ToleranceColor",
         "values": [
           {
@@ -134,6 +166,8 @@
         "samples": [
           "what resistor has a value of {resistance}",
           "I need a resistor of value {resistance}",
+          "what is the color code for a {resistance} {prefix} ohm resistor",
+          "what resistor has a value of {resistance} {prefix} ohms",
           "what is the color code for a {resistance} ohm resistor",
           "what resistor has a value of {resistance} ohms",
           "I need a resistor with {resistance} ohms of resistance",
@@ -141,11 +175,20 @@
           "what the code for a {resistance} ohm resistor is",
           "what is the code for a {resistance} ohm resistor",
           "what the color code for a {resistance} ohm resistor is",
+          "I need a resistor with {resistance} {prefix} ohms of resistance",
+          "I need a {resistance} {prefix} ohm resistor",
+          "what the code for a {resistance} {prefix} ohm resistor is",
+          "what is the code for a {resistance} {prefix} ohm resistor",
+          "what the color code for a {resistance} {prefix} ohm resistor is",
           "what resistor gives me a resistance of {resistance}",
           "what resistor gives me a resistance of {resistance} ohms",
           "what is the closest resistor to {resistance} ohms",
           "what resistor is closest to {resistance} ohms",
           "I want a {resistance} ohm resistor",
+          "what resistor gives me a resistance of {resistance} {prefix} ohms",
+          "what is the closest resistor to {resistance} {prefix} ohms",
+          "what resistor is closest to {resistance} {prefix} ohms",
+          "I want a {resistance} {prefix} ohm resistor",
           "I want a resistor of value {resistance}"
         ],
         "slots": [
@@ -153,9 +196,13 @@
             "name": "resistance",
             "type": "AMAZON.NUMBER",
             "samples": [
-              "{resistance} ohms",
+              "{resistance} {prefix} ohms",
               "{resistance}"
             ]
+          },
+          {
+            "name": "prefix",
+            "type": "SIPrefix"
           }
         ]
       },
@@ -270,6 +317,13 @@
             "prompts": {
               "elicitation": "Elicit.Intent-GetResistorColors.IntentSlot-resistance"
             }
+          },
+          {
+            "name": "prefix",
+            "type": "SIPrefix",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
           }
         ]
       },

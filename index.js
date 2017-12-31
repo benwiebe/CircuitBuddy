@@ -80,15 +80,21 @@ function handleSessionEndRequest(callback) {
 function getResistorColors(intent, session, callback){
     const cardTitle = intent.name;
     const resistanceSlot = intent.slots.resistance;
+    const prefixSlot = intent.slots.prefix;
     let shouldEndSession = true;
     let speechOutput = '';
     let repromptText = '';
 
     if(resistanceSlot)
     {
-        const resistance = resistanceSlot.value;
+        var resistance = resistanceSlot.value;
+        var prefix = 0;
+        if(prefixSlot.value && prefixSlot.resolutions && prefixSlot.resolutions.resolutionsPerAuthority[0].status.code !== "ER_SUCCESS_NO_MATCH")
+            prefix = prefixSlot.resolutions.resolutionsPerAuthority[0].values[0].value.id;
+
         if(resistance)
         {
+            resistance = resistance * Math.pow(10, prefix);
             speechOutput = computeColorResponse(resistance);
         }
         else
