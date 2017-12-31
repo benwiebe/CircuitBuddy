@@ -137,7 +137,16 @@
           "what is the color code for a {resistance} ohm resistor",
           "what resistor has a value of {resistance} ohms",
           "I need a resistor with {resistance} ohms of resistance",
-          "I need a {resistance} ohm resistor"
+          "I need a {resistance} ohm resistor",
+          "what the code for a {resistance} ohm resistor is",
+          "what is the code for a {resistance} ohm resistor",
+          "what the color code for a {resistance} ohm resistor is",
+          "what resistor gives me a resistance of {resistance}",
+          "what resistor gives me a resistance of {resistance} ohms",
+          "what is the closest resistor to {resistance} ohms",
+          "what resistor is closest to {resistance} ohms",
+          "I want a {resistance} ohm resistor",
+          "I want a resistor of value {resistance}"
         ],
         "slots": [
           {
@@ -162,20 +171,42 @@
           "{colorone} {colortwo} {colorthree} {tolerance} resistor",
           "I have a {colorone} {colortwo} {colorthree} {tolerance} resistor",
           "what is a {colorone} {colortwo} {colorthree} {tolerance} resistor",
-          "what is a {colorone} {colortwo} {colorthree} resistor"
+          "what is a {colorone} {colortwo} {colorthree} resistor",
+          "what is {colorone} {colortwo} {colorthree} {tolerance}",
+          "what resistor is {colorone} {colortwo} {colorthree} {tolerance}",
+          "what is {colorone} {colortwo} {colorthree}",
+          "what resistor is {colorone} {colortwo} {colorthree}"
         ],
         "slots": [
           {
             "name": "colorone",
-            "type": "BandColor"
+            "type": "BandColor",
+            "samples": [
+              "{colorone}",
+              "the color is {colorone}",
+              "the band is {colorone}",
+              "the first band is {colorone}"
+            ]
           },
           {
             "name": "colortwo",
-            "type": "BandColor"
+            "type": "BandColor",
+            "samples": [
+              "{colortwo}",
+              "the color is {colortwo}",
+              "the band is {colortwo}",
+              "the second band is {colortwo}"
+            ]
           },
           {
             "name": "colorthree",
-            "type": "BandColor"
+            "type": "BandColor",
+            "samples": [
+              "{colorthree}",
+              "the color is {colorthree}",
+              "the band is {colorthree}",
+              "the third band is {colorthree}"
+            ]
           },
           {
             "name": "tolerance",
@@ -195,6 +226,33 @@
           "value": "To get a resistor color code I need to know what resistance you're looking for. For what resistance do you want me to compute the code?"
         }
       ]
+    },
+    {
+      "id": "Elicit.Intent-GetResistorValue.IntentSlot-colorone",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Please tell me the color of the first band on the resistor"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-GetResistorValue.IntentSlot-colortwo",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Please tell me the color of the second band on the resistor"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-GetResistorValue.IntentSlot-colorthree",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Please tell me the color of the third band on the resistor"
+        }
+      ]
     }
   ],
   "dialog": {
@@ -212,6 +270,47 @@
             "prompts": {
               "elicitation": "Elicit.Intent-GetResistorColors.IntentSlot-resistance"
             }
+          }
+        ]
+      },
+      {
+        "name": "GetResistorValue",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "colorone",
+            "type": "BandColor",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-GetResistorValue.IntentSlot-colorone"
+            }
+          },
+          {
+            "name": "colortwo",
+            "type": "BandColor",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-GetResistorValue.IntentSlot-colortwo"
+            }
+          },
+          {
+            "name": "colorthree",
+            "type": "BandColor",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-GetResistorValue.IntentSlot-colorthree"
+            }
+          },
+          {
+            "name": "tolerance",
+            "type": "ToleranceColor",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
           }
         ]
       }

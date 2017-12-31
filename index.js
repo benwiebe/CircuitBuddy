@@ -120,26 +120,48 @@ function getResistorValue(intent, session, callback){
 
     if(color1Slot && color2Slot && color3Slot)
     {
-        const color1 = parseInt(color1Slot.resolutions.resolutionsPerAuthority[0].values[0].value.id);
-        const color2 = parseInt(color2Slot.resolutions.resolutionsPerAuthority[0].values[0].value.id);
-        const color3 = parseInt(color3Slot.resolutions.resolutionsPerAuthority[0].values[0].value.id);
-        const tolerance = toleranceSlot.resolutions.resolutionsPerAuthority[0].values[0].value.id;
-        if(color1 && color2 && color3)
+        if(color1Slot.resolutions && color2Slot.resolutions && color3Slot.resolutions)
         {
-            const resistance = (color1 + color2)*Math.pow(10, color3);
-            speechOutput = "That resistor has a value of " + resistance + " ohms";
-            if(tolerance)
+            const color1 = parseInt(color1Slot.resolutions.resolutionsPerAuthority[0].values[0].value.id);
+            const color2 = parseInt(color2Slot.resolutions.resolutionsPerAuthority[0].values[0].value.id);
+            const color3 = parseInt(color3Slot.resolutions.resolutionsPerAuthority[0].values[0].value.id);
+
+            var tolerance = null;
+            if(toleranceSlot.value)
             {
-                speechOutput += " with a tolerance of " + tolerance + " percent.";
+                tolerance = toleranceSlot.resolutions.resolutionsPerAuthority[0].values[0].value.id;
+            }
+
+            if(color1 && color2 && color3)
+            {
+                const resistance = (color1*10 + color2)*Math.pow(10, color3);
+                speechOutput = "That resistor has a value of " + resistance + " ohms";
+                if(tolerance)
+                {
+                    speechOutput += " with a tolerance of " + tolerance + " percent.";
+                }
+                else
+                {
+                    speechOutput += ".";
+                }
             }
             else
             {
-                speechOutput += ".";
+                speechOutput = "Sorry, something went wrong. Please try asking me again.";
+                repromptText = "";
             }
         }
         else
         {
-            speechOutput = "Sorry, to calculate resistance I need to know all three color bands. You can also include a tolerance band.";
+            speechOutput = "Sorry, ";
+            if(!color1Slot.resolutions)
+                speechOutput += " the color of your first band, " + color1Slot.value;
+            else if(!color2Slot.resolutions)
+                speechOutput += " the color of your second band, " + color2Slot.value;
+            else if(!color3Slot.resolutions)
+                speechOutput += " the color of your third band, " + color3Slot.value;
+
+            speechOutput += ", is not valid. Please use simple color names, such as blue or orange."
             repromptText = "To calculate resistance, try saying, what is the resistance of brown black red.";
         }
     }
@@ -149,7 +171,7 @@ function getResistorValue(intent, session, callback){
         repromptText = "To calculate resistance, try saying, what is the resistance of brown black red.";
     }
 
-    callback({}, buildSpeechletResponse(intent.name, speechOutput, repromptText, false));
+    callback({}, buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
 }
 
 /**
