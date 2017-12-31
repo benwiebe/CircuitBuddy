@@ -81,6 +81,74 @@
         ]
       },
       {
+        "name": "CapacitorToleranceMark",
+        "values": [
+          {
+            "id": "0",
+            "name": {
+              "value": "B",
+              "synonyms": []
+            }
+          },
+          {
+            "id": "1",
+            "name": {
+              "value": "C",
+              "synonyms": []
+            }
+          },
+          {
+            "id": "2",
+            "name": {
+              "value": "D",
+              "synonyms": []
+            }
+          },
+          {
+            "id": "3",
+            "name": {
+              "value": "F",
+              "synonyms": []
+            }
+          },
+          {
+            "id": "4",
+            "name": {
+              "value": "G",
+              "synonyms": []
+            }
+          },
+          {
+            "id": "5",
+            "name": {
+              "value": "J",
+              "synonyms": []
+            }
+          },
+          {
+            "id": "6",
+            "name": {
+              "value": "K",
+              "synonyms": []
+            }
+          },
+          {
+            "id": "7",
+            "name": {
+              "value": "M",
+              "synonyms": []
+            }
+          },
+          {
+            "id": "8",
+            "name": {
+              "value": "Z",
+              "synonyms": []
+            }
+          }
+        ]
+      },
+      {
         "name": "SIPrefix",
         "values": [
           {
@@ -108,6 +176,36 @@
               "synonyms": [
                 "gig"
               ]
+            }
+          },
+          {
+            "id": "-3",
+            "name": {
+              "value": "milli",
+              "synonyms": [
+                "mill"
+              ]
+            }
+          },
+          {
+            "id": "-6",
+            "name": {
+              "value": "micro",
+              "synonyms": []
+            }
+          },
+          {
+            "id": "-9",
+            "name": {
+              "value": "nano",
+              "synonyms": []
+            }
+          },
+          {
+            "id": "-12",
+            "name": {
+              "value": "pico",
+              "synonyms": []
             }
           }
         ]
@@ -162,6 +260,46 @@
         "samples": []
       },
       {
+        "name": "GetCapacitorCode",
+        "samples": [],
+        "slots": []
+      },
+      {
+        "name": "GetCapacitorValue",
+        "samples": [
+          "what is the capacitance of {capcode}",
+          "what is the capacitance of {capcode} {captol}",
+          "my capacitor says {capcode} {captol}",
+          "my capacitor says {capcode}",
+          "I have a capacitor that says {capcode} {captol}",
+          "I have a capacitor that says {capcode}",
+          "I have a capacitor with code {capcode}",
+          "I have a capacitor with code {capcode} {captol}",
+          "what is the value of {capcode} {captol}",
+          "what is the value of {capcode}",
+          "for the capacitance of {capcode}",
+          "for the capacitance of {capcode} {captol}"
+        ],
+        "slots": [
+          {
+            "name": "capcode",
+            "type": "AMAZON.NUMBER",
+            "samples": [
+              "{capcode}",
+              "{capcode} {captol}",
+              "My capacitor says {capcode}",
+              "My capacitor says {capcode} {captol}",
+              "My capacitor code is {capcode} {captol}",
+              "My capacitor code is {capcode}"
+            ]
+          },
+          {
+            "name": "captol",
+            "type": "CapacitorToleranceMark"
+          }
+        ]
+      },
+      {
         "name": "GetResistorColors",
         "samples": [
           "what resistor has a value of {resistance}",
@@ -189,7 +327,13 @@
           "what is the closest resistor to {resistance} {prefix} ohms",
           "what resistor is closest to {resistance} {prefix} ohms",
           "I want a {resistance} {prefix} ohm resistor",
-          "I want a resistor of value {resistance}"
+          "I want a resistor of value {resistance}",
+          "for the code for {resistance}",
+          "for the color code for {resistance}",
+          "for the code for a {resistance} {prefix} ohm resistor",
+          "for the color code for a {resistance} {prefix} ohm resistor",
+          "for the code for a {resistance} ohm resistor",
+          "for the color code for a {resistance} ohm resistor"
         ],
         "slots": [
           {
@@ -222,7 +366,9 @@
           "what is {colorone} {colortwo} {colorthree} {tolerance}",
           "what resistor is {colorone} {colortwo} {colorthree} {tolerance}",
           "what is {colorone} {colortwo} {colorthree}",
-          "what resistor is {colorone} {colortwo} {colorthree}"
+          "what resistor is {colorone} {colortwo} {colorthree}",
+          "for the resistance of {colorone} {colortwo} {colorthree}",
+          "for the resistance of {colorone} {colortwo} {colorthree} {tolerance}"
         ],
         "slots": [
           {
@@ -266,6 +412,15 @@
   },
   "prompts": [
     {
+      "id": "Elicit.Intent-GetCapacitorValue.IntentSlot-capcode",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "To calculate capacitance, I need the capacitor code. What is the three or four digit code on your capacitor?"
+        }
+      ]
+    },
+    {
       "id": "Elicit.Intent-GetResistorColors.IntentSlot-resistance",
       "variations": [
         {
@@ -304,6 +459,29 @@
   ],
   "dialog": {
     "intents": [
+      {
+        "name": "GetCapacitorValue",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "capcode",
+            "type": "AMAZON.NUMBER",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-GetCapacitorValue.IntentSlot-capcode"
+            }
+          },
+          {
+            "name": "captol",
+            "type": "CapacitorToleranceMark",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
+          }
+        ]
+      },
       {
         "name": "GetResistorColors",
         "confirmationRequired": false,

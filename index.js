@@ -14,6 +14,23 @@ const BANDCOLORS = [
                     "grey",
                     "white"
                     ];
+const CAPTOL = [
+                "0.1 pico farads",
+                "0.25 pico farads",
+                "0.5 pico farads",
+                "one percent",
+                "two percent",
+                "five percent",
+                "ten percent",
+                "twenty-five percent",
+                "plus eighty percent to minus twenty percent"
+               ];
+const SIPREFIXCAP = [
+                        "pico",
+                        "nano",
+                        "micro",
+                        "milli"
+                    ];
 
 // --------------- Helpers that build all of the responses -----------------------
 
@@ -177,7 +194,47 @@ function getResistorValue(intent, session, callback){
         repromptText = "To calculate resistance, try saying, what is the resistance of brown black red.";
     }
 
-    callback({}, buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
+    callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+}
+
+function getCapacitorValue(intent, session, callback)
+{
+    const cardTitle = intent.name;
+    let shouldEndSession = true;
+    let speechOutput = '';
+    let repromptText = '';
+    const codeSlot = intent.slots.capcode;
+    const toleranceSlot = intent.slots.captol;
+
+    if(codeSlot)
+    {
+        const code = codeSlot.value;
+        var toleranceId = -1;
+        if(toleranceSlot && toleranceSlot.resolutions && toleranceSlot.resolutions.resolutionsPerAuthority[0].status.code !== "ER_SUCCESS_NO_MATCH")
+            toleranceId = toleranceSlot.resolutions.resolutionsPerAuthority[0].values[0].value.id;
+
+        const capacitanceResponse = computeCapacitanceResponse(code);
+        
+        if(capacitanceResponse)
+        {
+            speechOutput = "That capacitor has a capacitance of " + capacitanceResponse;
+            if(toleranceId > -1)
+                speechOutput += " with a tolerance of " + CAPTOL[toleranceId];
+            speechOutput += ".";
+        }
+        else
+        {
+            speechOutput = "There was an error when computing the capacitance value. Please try again!";
+            repromptText = "To calculate capacitance, try saying, what is the capacitance of 104 Z.";
+        }
+    }
+    else
+    {
+        speechOutput = "To calculate capacitance, I need the code on the capacitor. Try saying, what is the capacitance of 104 Z.";
+        repromptText = "To calculate capacitance, try saying, what is the capacitance of 104 Z.";
+    }
+
+    callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
 }
 
 /**
@@ -217,6 +274,36 @@ function computeColorResponse(resistance)
     }
 }
 
+function computeCapacitanceResponse(code)
+{
+    var digits = [],
+    sNumber = code.toString();
+    for (var i = 0, len = sNumber.length; i < len; i += 1) {
+        digits.push(+sNumber.charAt(i));
+    }
+
+    var capacitance = -1;
+    if(digits.length == 3)
+        capacitance = (digits[0]*10 + digits[1]) * Math.pow(10, digits[2]);
+    else if(digits.length == 2)
+        capacitance = code;
+
+    if(capacitance == -1)
+        return null;
+    else
+    {
+        digits = [];
+        sNumber = capacitance.toString();
+        for (var i = 0, len = sNumber.length; i < len; i += 1) {
+            digits.push(+sNumber.charAt(i));
+        }
+
+        const si = Math.floor((digits.length-1)/3);
+        capacitance = Math.round(capacitance/Math.pow(10, 3*si));
+        return capacitance + " " + SIPREFIXCAP[si] + (capacitance == 1 ? " farad" : " farads");
+    }
+}
+
 
 // --------------- Events -----------------------
 
@@ -251,6 +338,8 @@ function onIntent(intentRequest, session, callback) {
         getResistorColors(intent, session, callback);
     } else if (intentName === 'GetResistorValue') {
         getResistorValue(intent, session, callback);
+    } else if (intentName === 'GetCapacitorValue') {
+    getCapacitorValue(intent, session, callback);
     } else if (intentName === 'AMAZON.HelpIntent') {
         getWelcomeResponse(callback);
     } else if (intentName === 'AMAZON.StopIntent' || intentName === 'AMAZON.CancelIntent') {
