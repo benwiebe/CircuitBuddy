@@ -149,6 +149,165 @@
         ]
       },
       {
+        "name": "DecimalNumber",
+        "values": [
+          {
+            "id": null,
+            "name": {
+              "value": "1",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "2",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "3",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "10",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "11",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "100",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "12345",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "1.234",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "1.3",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "5.7",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "8.9",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "999.76",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "106.9",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "88.5",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "4",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "5",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "6",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "7",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "8",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "9",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "0",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "0.6739",
+              "synonyms": []
+            }
+          }
+        ]
+      },
+      {
         "name": "SIPrefix",
         "values": [
           {
@@ -261,8 +420,41 @@
       },
       {
         "name": "GetCapacitorCode",
-        "samples": [],
-        "slots": []
+        "samples": [
+          "I need a capacitor with {capacitance} {prefix} farads of capacitance",
+          "I need a capacitor with {capacitance} farads of capacitance",
+          "what is the code for a {capacitance} farad capacitor",
+          "what is the code for a {capacitance} {prefix} farad capacitor",
+          "for the code for a {capacitance} {prefix} farad capacitor",
+          "for the code for a {capacitance} farad capacitor",
+          "what is the capacitor code for {capacitance} farads",
+          "what is the capacitor code for {capacitance} {prefix} farads",
+          "for the capacitor code for a {capacitance} farad capacitor",
+          "for the capacitor code for a {capacitance} {prefix} farad capacitor",
+          "for the capacitor code for {capacitance} farads",
+          "for the capacitor code for {capacitance} {prefix} farads",
+          "I need a {capacitance} {prefix} farad capacitor",
+          "I need a {capacitance} farad capacitor",
+          "I need a capacitor with value {capacitance} {prefix} farads",
+          "I need a capacitor with value {capacitance} farads"
+        ],
+        "slots": [
+          {
+            "name": "capacitance",
+            "type": "DecimalNumber",
+            "samples": [
+              "{capacitance}",
+              "{capacitance} farads",
+              "{capacitance} {prefix} farads",
+              "I want a {capacitance} farad capacitor",
+              "I want a {capacitance} {prefix} farad capacitor"
+            ]
+          },
+          {
+            "name": "prefix",
+            "type": "SIPrefix"
+          }
+        ]
       },
       {
         "name": "GetCapacitorValue",
@@ -338,7 +530,7 @@
         "slots": [
           {
             "name": "resistance",
-            "type": "AMAZON.NUMBER",
+            "type": "DecimalNumber",
             "samples": [
               "{resistance} {prefix} ohms",
               "{resistance}"
@@ -412,6 +604,15 @@
   },
   "prompts": [
     {
+      "id": "Elicit.Intent-GetCapacitorCode.IntentSlot-capacitance",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "To determine the capacitor code, I need to know what capacitance you're looking for. What capacitance do you want me to find the code for?"
+        }
+      ]
+    },
+    {
       "id": "Elicit.Intent-GetCapacitorValue.IntentSlot-capcode",
       "variations": [
         {
@@ -460,6 +661,29 @@
   "dialog": {
     "intents": [
       {
+        "name": "GetCapacitorCode",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "capacitance",
+            "type": "DecimalNumber",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-GetCapacitorCode.IntentSlot-capacitance"
+            }
+          },
+          {
+            "name": "prefix",
+            "type": "SIPrefix",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
+          }
+        ]
+      },
+      {
         "name": "GetCapacitorValue",
         "confirmationRequired": false,
         "prompts": {},
@@ -489,7 +713,7 @@
         "slots": [
           {
             "name": "resistance",
-            "type": "AMAZON.NUMBER",
+            "type": "DecimalNumber",
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
