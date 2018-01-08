@@ -157,7 +157,7 @@ function getResistorValue(intent, session, callback){
                 tolerance = toleranceSlot.resolutions.resolutionsPerAuthority[0].values[0].value.id;
             }
 
-            if(color1 && color2 && color3)
+            if(!isNaN(color1) && !isNaN(color2) && !isNaN(color3))
             {
                 const resistance = (color1*10 + color2)*Math.pow(10, color3);
                 speechOutput = "That resistor has a value of " + resistance + " ohms";
@@ -209,7 +209,7 @@ function getCapacitorValue(intent, session, callback)
     const codeSlot = intent.slots.capcode;
     const toleranceSlot = intent.slots.captol;
 
-    if(codeSlot)
+    if(codeSlot && codeSlot.value)
     {
         const code = codeSlot.value;
         var toleranceId = -1;
