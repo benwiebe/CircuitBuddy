@@ -74,7 +74,7 @@ function getWelcomeResponse(callback) {
         'You can ask me questions about circuits, such as resistor values!';
     // If the user either does not reply to the welcome message or says something that is not
     // understood, they will be prompted again with this text.
-    const repromptText = 'You can ask me questions about circuits, such as resistor values!' +
+    const repromptText = 'You can ask me questions about circuits, such as resistor values! ' +
                             'Try saying, I need a 300 ohm resistor.';
     const shouldEndSession = false;
 
