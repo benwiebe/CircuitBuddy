@@ -42,7 +42,7 @@ function buildSpeechletResponse(title, output, repromptText, shouldEndSession) {
         },
         card: {
             type: 'Simple',
-            title: `CircuitBuddy - ${title}`,
+            title: `${title}`,
             content: `${output}`,
         },
         reprompt: {
@@ -69,7 +69,7 @@ function buildResponse(sessionAttributes, speechletResponse) {
 function getWelcomeResponse(callback) {
     // If we wanted to initialize the session to have some attributes we could add those here.
     const sessionAttributes = {};
-    const cardTitle = 'Welcome';
+    const cardTitle = 'Welcome to CircuitBuddy';
     const speechOutput = 'Welcome to Circuit Buddy. ' +
         'You can ask me questions about circuits, such as resistor values!';
     // If the user either does not reply to the welcome message or says something that is not
@@ -95,7 +95,7 @@ function handleSessionEndRequest(callback) {
  * Responds to user requests for a color code computation
  */
 function getResistorColors(intent, session, callback){
-    const cardTitle = intent.name;
+    let cardTitle = intent.name;
     const resistanceSlot = intent.slots.resistance;
     const prefixSlot = intent.slots.prefix;
     let shouldEndSession = true;
@@ -111,6 +111,11 @@ function getResistorColors(intent, session, callback){
 
         if(resistance && !isNaN(resistance))
         {
+            cardTitle = "Resistor: " + resistance;
+            if(prefixSlot.resolutions.resolutionsPerAuthority[0].values[0].value.name)
+                cardTitle += prefixSlot.resolutions.resolutionsPerAuthority[0].values[0].value.name +" ";
+            cardTitle += "ohms";
+
             resistance = resistance * Math.pow(10, prefix);
             speechOutput = computeColorResponse(resistance);
         }
@@ -134,7 +139,7 @@ function getResistorColors(intent, session, callback){
 }
 
 function getResistorValue(intent, session, callback){
-    const cardTitle = intent.name;
+    let cardTitle = intent.name;
     let shouldEndSession = true;
     let speechOutput = '';
     let repromptText = '';
@@ -169,6 +174,7 @@ function getResistorValue(intent, session, callback){
                 {
                     speechOutput += ".";
                 }
+                cardTitle = "Resistor: " + color1Slot.value + " " + color2Slot.value + " " + color3Slot.value;
             }
             else
             {
@@ -202,7 +208,7 @@ function getResistorValue(intent, session, callback){
 
 function getCapacitorValue(intent, session, callback)
 {
-    const cardTitle = intent.name;
+    let cardTitle = intent.name;
     let shouldEndSession = true;
     let speechOutput = '';
     let repromptText = '';
@@ -220,6 +226,7 @@ function getCapacitorValue(intent, session, callback)
         
         if(capacitanceResponse)
         {
+            cardTitle = "Capacitor: " + toleranceSlot.value;
             speechOutput = "That capacitor has a capacitance of " + capacitanceResponse;
             if(toleranceId > -1)
                 speechOutput += " with a tolerance of " + CAPTOL[toleranceId];
@@ -244,7 +251,7 @@ function getCapacitorValue(intent, session, callback)
 
 function getCapacitorCode(intent, session, callback)
 {
-    const cardTitle = intent.name;
+    let cardTitle = intent.name;
     let shouldEndSession = true;
     let speechOutput = '';
     let repromptText = '';
@@ -269,6 +276,10 @@ function getCapacitorCode(intent, session, callback)
                     speechOutput += " " + prefixSlot.value;
 
                 speechOutput += " farads is " + capcode + ".";
+                cardTitle = "Capacitor: " + capacitance;
+                if(prefixSlot.resolutions)
+                    cardTitle += prefixSlot.resolutions.resolutionsPerAuthority[0].values[0].value.name + " ";
+                cardTitle += "farads";
             }
             else
             {
