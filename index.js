@@ -104,7 +104,7 @@ function getResistorColors(intent, session, callback){
 
     if(resistanceSlot)
     {
-        var resistance = resistanceSlot.value;
+        var resistance = handleNumber(resistanceSlot.value);
         var prefix = 0;
         if(prefixSlot && prefixSlot.value && prefixSlot.resolutions && prefixSlot.resolutions.resolutionsPerAuthority[0].status.code !== "ER_SUCCESS_NO_MATCH")
             prefix = prefixSlot.resolutions.resolutionsPerAuthority[0].values[0].value.id;
@@ -260,7 +260,7 @@ function getCapacitorCode(intent, session, callback)
 
     if(capacitanceSlot)
     {
-        var capacitance = capacitanceSlot.value;
+        var capacitance = handleNumber(capacitanceSlot.value);
         var prefix = 0;
         if(prefixSlot && prefixSlot.value && prefixSlot.resolutions && prefixSlot.resolutions.resolutionsPerAuthority[0].status.code !== "ER_SUCCESS_NO_MATCH")
             prefix = prefixSlot.resolutions.resolutionsPerAuthority[0].values[0].value.id;
@@ -293,6 +293,47 @@ function getCapacitorCode(intent, session, callback)
                             "for ten microfarads.";
             shouldEndSession = false;
         }
+    }
+
+    callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+}
+
+function getParallelResistance(intent, session, callback)
+{
+    let cardTitle = intent.name;
+    const resoneSlot = intent.slots.resone;
+    const preoneSlot = intent.slots.preone;
+    const restwoSlot = intent.slots.restwo;
+    const pretwoSlot = intent.slots.pretwo;
+    let shouldEndSession = true;
+    let speechOutput = '';
+    let repromptText = '';
+
+    if(resoneSlot && restwoSlot && resoneSlot.value && restwoSlot.value)
+    {
+        var resone = handleNumber(resoneSlot.value);
+        var restwo = handleNumber(restwoSlot.value);
+        if(!isNaN(resone) && !isNaN(restwo))
+        {
+            if(preoneSlot && preoneSlot.value && preoneSlot.resolutions && preoneSlot.resolutions.resolutionsPerAuthority[0].status.code !== "ER_SUCCESS_NO_MATCH")
+                resone = resone*Math.pow(10, preoneSlot.resolutions.resolutionsPerAuthority[0].values[0].value.id);
+            if(pretwoSlot && pretwoSlot.value && pretwoSlot.resolutions && pretwoSlot.resolutions.resolutionsPerAuthority[0].status.code !== "ER_SUCCESS_NO_MATCH")
+                restwo = restwo*Math.pow(10, pretwoSlot.resolutions.resolutionsPerAuthority[0].values[0].value.id);
+
+            var parres = 1/((1/resone) + (1/restwo)); //use reciprocal method
+            parres = roundDec(parres, 2);
+
+            cardTitle = "Parallel Resistance: " + resone + "||" + restwo;
+            speechOutput = resone + " ohms in parallel with " + restwo + " ohms has an equivalent resistance of " + parres + " ohms.";
+        }else{
+            speechOutput = "Sorry, I didn't understand one of the resistances you said. Please try again!";
+            repromptText = "Try saying, what is the equivalent resistance of five ohms in parallel with ten ohms.";
+            shouldEndSession = false;
+        }
+    }else{
+        speechOutput = "To calculate equivalent parallel resistance, please tell me two resistances. Try saying, what is the equivalent resistance of five ohms in parallel with ten ohms.";
+        repromptText = "Try saying, what is the equivalent resistance of five ohms in parallel with ten ohms.";
+        shouldEndSession = false;
     }
 
     callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
@@ -393,6 +434,17 @@ function computeCapCode(capacitance)
     }
 }
 
+// ------------------ Other Helpers -----------------------
+function handleNumber(num)
+{
+    return parseInt(num.toString().replace(",", ""))
+}
+
+function roundDec(num, dec)
+{
+    return Math.round(num*Math.pow(10, dec))/Math.pow(10, dec);
+}
+
 // --------------- Events -----------------------
 
 /**
@@ -430,6 +482,8 @@ function onIntent(intentRequest, session, callback) {
         getCapacitorValue(intent, session, callback);
     } else if (intentName === 'GetCapacitorCode') {
         getCapacitorCode(intent, session, callback);
+    }else if(intentName === 'GetParallelResistance'){
+        getParallelResistance(intent, session, callback);
     } else if (intentName === 'AMAZON.HelpIntent') {
         getWelcomeResponse(callback);
     } else if (intentName === 'AMAZON.StopIntent' || intentName === 'AMAZON.CancelIntent') {

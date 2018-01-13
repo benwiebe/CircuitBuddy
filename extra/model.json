@@ -492,6 +492,52 @@
         ]
       },
       {
+        "name": "GetParallelResistance",
+        "samples": [
+          "what is the resistance of {resone} in parallel with {restwo}",
+          "what is the resistance of {resone} ohms in parallel with {restwo} ohms",
+          "what is the resistance of {resone} {preone} ohms in parallel with {restwo} {pretwo} ohms",
+          "I have a {resone} ohm resistor in parallel with a {restwo} ohm resistor",
+          "I have a {resone} {preone} ohm resistor in parallel with a {restwo} {pretwo} ohm resistor",
+          "I have {resone} ohms in parallel with {restwo} ohms",
+          "I have {resone} {preone} ohms in parallel with {restwo} {pretwo} ohms",
+          "what is the equivalent resistance of {resone} ohms in parallel with {restwo} ohms",
+          "what is the equivalent resistance of {resone} {preone} ohms in parallel with {restwo} {pretwo} ohms",
+          "what is the equivalent resistance of {resone} in parallel with {restwo}",
+          "I need the equivalent resistance of {resone} in parallel with {restwo}",
+          "I need the equivalent resistance of {resone} ohms in parallel with {restwo} ohms",
+          "I need the equivalent resistance of {resone} {preone} ohms in parallel with {restwo} {pretwo} ohms"
+        ],
+        "slots": [
+          {
+            "name": "resone",
+            "type": "DecimalNumber",
+            "samples": [
+              "{resone}",
+              "{resone} ohms",
+              "{resone} {preone} ohms"
+            ]
+          },
+          {
+            "name": "restwo",
+            "type": "DecimalNumber",
+            "samples": [
+              "{restwo}",
+              "{restwo} ohms",
+              "{restwo} {pretwo} ohms"
+            ]
+          },
+          {
+            "name": "preone",
+            "type": "SIPrefix"
+          },
+          {
+            "name": "pretwo",
+            "type": "SIPrefix"
+          }
+        ]
+      },
+      {
         "name": "GetResistorColors",
         "samples": [
           "what resistor has a value of {resistance}",
@@ -622,6 +668,24 @@
       ]
     },
     {
+      "id": "Elicit.Intent-GetParallelResistance.IntentSlot-resone",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "What is the value of the first resistor in parallel?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-GetParallelResistance.IntentSlot-restwo",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "What is the value of the second resistor in parallel?"
+        }
+      ]
+    },
+    {
       "id": "Elicit.Intent-GetResistorColors.IntentSlot-resistance",
       "variations": [
         {
@@ -700,6 +764,45 @@
           {
             "name": "captol",
             "type": "CapacitorToleranceMark",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
+          }
+        ]
+      },
+      {
+        "name": "GetParallelResistance",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "resone",
+            "type": "DecimalNumber",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-GetParallelResistance.IntentSlot-resone"
+            }
+          },
+          {
+            "name": "restwo",
+            "type": "DecimalNumber",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-GetParallelResistance.IntentSlot-restwo"
+            }
+          },
+          {
+            "name": "preone",
+            "type": "SIPrefix",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
+          },
+          {
+            "name": "pretwo",
+            "type": "SIPrefix",
             "elicitationRequired": false,
             "confirmationRequired": false,
             "prompts": {}
