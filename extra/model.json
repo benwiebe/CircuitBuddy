@@ -506,7 +506,18 @@
           "what is the equivalent resistance of {resone} in parallel with {restwo}",
           "I need the equivalent resistance of {resone} in parallel with {restwo}",
           "I need the equivalent resistance of {resone} ohms in parallel with {restwo} ohms",
-          "I need the equivalent resistance of {resone} {preone} ohms in parallel with {restwo} {pretwo} ohms"
+          "I need the equivalent resistance of {resone} {preone} ohms in parallel with {restwo} {pretwo} ohms",
+          "for the resistance of {resone} in parallel with {restwo}",
+          "for the equivalent resistance of {resone} in parallel with {restwo}",
+          "for the resistance of {resone} ohms in parallel with {restwo} ohms",
+          "for the equivalent resistance of {resone} ohms in parallel with {restwo} ohms",
+          "for the resistance of {resone} {preone} ohms in parallel with {restwo} {pretwo} ohms",
+          "for the equivalent resistance of {resone} {preone} ohms in parallel with {restwo} {pretwo} ohms",
+          "what the equivalent resistance is of {resone} ohms and {restwo} ohms",
+          "what the equivalent resistance is of {resone} {preone} ohms and {restwo} {pretwo} ohms",
+          "what the equivalent resistance is of {resone} and {restwo} ohms",
+          "I have two resistors in parallel",
+          "help me with parallel resistors"
         ],
         "slots": [
           {
@@ -606,7 +617,20 @@
           "what is {colorone} {colortwo} {colorthree}",
           "what resistor is {colorone} {colortwo} {colorthree}",
           "for the resistance of {colorone} {colortwo} {colorthree}",
-          "for the resistance of {colorone} {colortwo} {colorthree} {tolerance}"
+          "for the resistance of {colorone} {colortwo} {colorthree} {tolerance}",
+          "what is the resistance of {colorone} {colortwo}",
+          "what is the resistance of {colorone}",
+          "for the resistance of {colorone}",
+          "for the resistance of {colorone} {colortwo}",
+          "what resistor is {colorone}",
+          "what resistor is {colorone} {colortwo}",
+          "I have a resistor",
+          "What do these resistor colors mean",
+          "what do the color bands on a resistor represent",
+          "help me with resistor colors",
+          "help me with resistor codes",
+          "what the resistance is of {colorone}",
+          "what the resistance is of {colorone} {colortwo}"
         ],
         "slots": [
           {

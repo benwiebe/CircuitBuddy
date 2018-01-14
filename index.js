@@ -63,6 +63,33 @@ function buildResponse(sessionAttributes, speechletResponse) {
     };
 }
 
+//from https://github.com/alexa/alexa-cookbook/blob/master/handling-responses/dialog-directive-delegate/sample-nodejs-plan-my-trip/src/SampleWithoutTheSDK.js
+function buildSpeechletResponseWithDirectiveNoIntent() {
+    return {
+      "outputSpeech" : null,
+      "card" : null,
+      "directives" : [ {
+        "type" : "Dialog.Delegate"
+      } ],
+      "reprompt" : null,
+      "shouldEndSession" : false
+    }
+  }
+
+//from https://github.com/alexa/alexa-cookbook/blob/master/handling-responses/dialog-directive-delegate/sample-nodejs-plan-my-trip/src/SampleWithoutTheSDK.js
+function buildSpeechletResponseDelegate(shouldEndSession) {
+      return {
+          outputSpeech:null,
+          directives: [
+                  {
+                      "type": "Dialog.Delegate",
+                      "updatedIntent": null
+                  }
+              ],
+         reprompt: null,
+          shouldEndSession: shouldEndSession
+      }
+}
 
 // --------------- Functions that control the skill's behavior -----------------------
 
@@ -94,7 +121,10 @@ function handleSessionEndRequest(callback) {
 /**
  * Responds to user requests for a color code computation
  */
-function getResistorColors(intent, session, callback){
+function getResistorColors(request, session, callback){
+
+    var intent = slotCollector(request, {}, callback);
+
     let cardTitle = intent.name;
     const resistanceSlot = intent.slots.resistance;
     const prefixSlot = intent.slots.prefix;
@@ -112,7 +142,7 @@ function getResistorColors(intent, session, callback){
         if(resistance && !isNaN(resistance))
         {
             cardTitle = "Resistor: " + resistance;
-            if(prefixSlot.resolutions.resolutionsPerAuthority[0].values[0].value.name)
+            if(prefixSlot && prefixSlot.value && prefixSlot.resolutions && prefixSlot.resolutions.resolutionsPerAuthority[0].values[0].value.name)
                 cardTitle += prefixSlot.resolutions.resolutionsPerAuthority[0].values[0].value.name +" ";
             cardTitle += "ohms";
 
@@ -138,7 +168,10 @@ function getResistorColors(intent, session, callback){
     callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
 }
 
-function getResistorValue(intent, session, callback){
+function getResistorValue(request, session, callback){
+
+    var intent = slotCollector(request, {}, callback);
+
     let cardTitle = intent.name;
     let shouldEndSession = true;
     let speechOutput = '';
@@ -150,7 +183,7 @@ function getResistorValue(intent, session, callback){
 
     if(color1Slot && color2Slot && color3Slot)
     {
-        if(color1Slot.resolutions && color2Slot.resolutions && color3Slot.resolutions)
+        if(color1Slot.resolutions && color2Slot.resolutions && color3Slot.resolutions && color1Slot.resolutions.resolutionsPerAuthority[0].values && color2Slot.resolutions.resolutionsPerAuthority[0].values && color3Slot.resolutions.resolutionsPerAuthority[0].values)
         {
             const color1 = parseInt(color1Slot.resolutions.resolutionsPerAuthority[0].values[0].value.id);
             const color2 = parseInt(color2Slot.resolutions.resolutionsPerAuthority[0].values[0].value.id);
@@ -206,8 +239,10 @@ function getResistorValue(intent, session, callback){
     callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
 }
 
-function getCapacitorValue(intent, session, callback)
+function getCapacitorValue(request, session, callback)
 {
+    var intent = slotCollector(request, {}, callback);
+
     let cardTitle = intent.name;
     let shouldEndSession = true;
     let speechOutput = '';
@@ -249,8 +284,10 @@ function getCapacitorValue(intent, session, callback)
     callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
 }
 
-function getCapacitorCode(intent, session, callback)
+function getCapacitorCode(request, session, callback)
 {
+    var intent = slotCollector(request, {}, callback);
+
     let cardTitle = intent.name;
     let shouldEndSession = true;
     let speechOutput = '';
@@ -298,8 +335,10 @@ function getCapacitorCode(intent, session, callback)
     callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
 }
 
-function getParallelResistance(intent, session, callback)
+function getParallelResistance(request, session, callback)
 {
+    var intent = slotCollector(request, {}, callback);
+
     let cardTitle = intent.name;
     const resoneSlot = intent.slots.resone;
     const preoneSlot = intent.slots.preone;
@@ -338,6 +377,32 @@ function getParallelResistance(intent, session, callback)
 
     callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
 }
+
+// ------------------ Slot Collection Handlers -----------------------
+// Handlers based off of https://github.com/alexa/alexa-cookbook/blob/master/handling-responses/dialog-directive-delegate/sample-nodejs-plan-my-trip/src/SampleWithoutTheSDK.js
+
+/**
+ * Primary slot collection handler
+ */
+function slotCollector(request, sessionAttributes, callback){
+    if (request.dialogState === "STARTED") {
+      var updatedIntent=request.intent;
+      //optionally pre-fill slots: update the intent object with slot values for which
+      //you have defaults, then return Dialog.Delegate with this updated intent
+      // in the updatedIntent property
+      callback(sessionAttributes,
+          buildSpeechletResponseWithDirectiveNoIntent());
+    } else if (request.dialogState !== "COMPLETED") {
+      // return a Dialog.Delegate directive with no updatedIntent property.
+      callback(sessionAttributes,
+          buildSpeechletResponseWithDirectiveNoIntent());
+    } else {;
+      // Dialog is now complete and all required slots should be filled,
+      // so call your normal intent handler.
+        return request.intent;
+    }
+}
+
 
 // ------------------ Response Helpers -----------------------
 
@@ -475,15 +540,15 @@ function onIntent(intentRequest, session, callback) {
 
     // Dispatch to your skill's intent handlers
     if (intentName === 'GetResistorColors') {
-        getResistorColors(intent, session, callback);
+        getResistorColors(intentRequest, session, callback);
     } else if (intentName === 'GetResistorValue') {
-        getResistorValue(intent, session, callback);
+        getResistorValue(intentRequest, session, callback);
     } else if (intentName === 'GetCapacitorValue') {
-        getCapacitorValue(intent, session, callback);
+        getCapacitorValue(intentRequest, session, callback);
     } else if (intentName === 'GetCapacitorCode') {
-        getCapacitorCode(intent, session, callback);
+        getCapacitorCode(intentRequest, session, callback);
     }else if(intentName === 'GetParallelResistance'){
-        getParallelResistance(intent, session, callback);
+        getParallelResistance(intentRequest, session, callback);
     } else if (intentName === 'AMAZON.HelpIntent') {
         getWelcomeResponse(callback);
     } else if (intentName === 'AMAZON.StopIntent' || intentName === 'AMAZON.CancelIntent') {
