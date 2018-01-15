@@ -121,10 +121,8 @@ function handleSessionEndRequest(callback) {
 /**
  * Responds to user requests for a color code computation
  */
-function getResistorColors(request, session, callback){
-
-    var intent = slotCollector(request, {}, callback);
-
+function getResistorColors(intent, session, callback)
+{
     let cardTitle = intent.name;
     const resistanceSlot = intent.slots.resistance;
     const prefixSlot = intent.slots.prefix;
@@ -168,10 +166,8 @@ function getResistorColors(request, session, callback){
     callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
 }
 
-function getResistorValue(request, session, callback){
-
-    var intent = slotCollector(request, {}, callback);
-
+function getResistorValue(intent, session, callback)
+{
     let cardTitle = intent.name;
     let shouldEndSession = true;
     let speechOutput = '';
@@ -239,10 +235,8 @@ function getResistorValue(request, session, callback){
     callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
 }
 
-function getCapacitorValue(request, session, callback)
+function getCapacitorValue(intent, session, callback)
 {
-    var intent = slotCollector(request, {}, callback);
-
     let cardTitle = intent.name;
     let shouldEndSession = true;
     let speechOutput = '';
@@ -284,10 +278,8 @@ function getCapacitorValue(request, session, callback)
     callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
 }
 
-function getCapacitorCode(request, session, callback)
+function getCapacitorCode(intent, session, callback)
 {
-    var intent = slotCollector(request, {}, callback);
-
     let cardTitle = intent.name;
     let shouldEndSession = true;
     let speechOutput = '';
@@ -335,10 +327,8 @@ function getCapacitorCode(request, session, callback)
     callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
 }
 
-function getParallelResistance(request, session, callback)
+function getParallelResistance(intent, session, callback)
 {
-    var intent = slotCollector(request, {}, callback);
-
     let cardTitle = intent.name;
     const resoneSlot = intent.slots.resone;
     const preoneSlot = intent.slots.preone;
@@ -535,20 +525,20 @@ function onLaunch(launchRequest, session, callback) {
 function onIntent(intentRequest, session, callback) {
     console.log(`onIntent requestId=${intentRequest.requestId}, sessionId=${session.sessionId}`);
 
-    const intent = intentRequest.intent;
+    const intent = slotCollector(intentRequest, session.attributes, callback);
     const intentName = intentRequest.intent.name;
 
     // Dispatch to your skill's intent handlers
     if (intentName === 'GetResistorColors') {
-        getResistorColors(intentRequest, session, callback);
+        getResistorColors(intent, session, callback);
     } else if (intentName === 'GetResistorValue') {
-        getResistorValue(intentRequest, session, callback);
+        getResistorValue(intent, session, callback);
     } else if (intentName === 'GetCapacitorValue') {
-        getCapacitorValue(intentRequest, session, callback);
+        getCapacitorValue(intent, session, callback);
     } else if (intentName === 'GetCapacitorCode') {
-        getCapacitorCode(intentRequest, session, callback);
+        getCapacitorCode(intent, session, callback);
     }else if(intentName === 'GetParallelResistance'){
-        getParallelResistance(intentRequest, session, callback);
+        getParallelResistance(intent, session, callback);
     } else if (intentName === 'AMAZON.HelpIntent') {
         getWelcomeResponse(callback);
     } else if (intentName === 'AMAZON.StopIntent' || intentName === 'AMAZON.CancelIntent') {

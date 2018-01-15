@@ -447,7 +447,9 @@
               "{capacitance} farads",
               "{capacitance} {prefix} farads",
               "I want a {capacitance} farad capacitor",
-              "I want a {capacitance} {prefix} farad capacitor"
+              "I want a {capacitance} {prefix} farad capacitor",
+              "Find the code for a {capacitance} farad capacitor",
+              "Find the code for a {capacitance} {prefix} farad capacitor"
             ]
           },
           {
@@ -526,7 +528,13 @@
             "samples": [
               "{resone}",
               "{resone} ohms",
-              "{resone} {preone} ohms"
+              "{resone} {preone} ohms",
+              "The first resistor is {resone}",
+              "The first resistor is {resone} ohms",
+              "The first resistor is {resone} {preone} ohms",
+              "The first resistance is {resone}",
+              "The first resistance is {resone} ohm",
+              "The first resistance is {resone} {preone} ohms"
             ]
           },
           {
@@ -535,7 +543,13 @@
             "samples": [
               "{restwo}",
               "{restwo} ohms",
-              "{restwo} {pretwo} ohms"
+              "{restwo} {pretwo} ohms",
+              "The second resistor is {restwo}",
+              "The second resistor is {restwo} ohms",
+              "The second resistor is {restwo} {pretwo} ohms",
+              "The second resistance is {restwo}",
+              "The second resistance is {restwo} ohms",
+              "The second resistance is {restwo} {pretwo} ohms"
             ]
           },
           {
@@ -590,7 +604,13 @@
             "type": "DecimalNumber",
             "samples": [
               "{resistance} {prefix} ohms",
-              "{resistance}"
+              "{resistance}",
+              "{resistance} ohms",
+              "I want the code for {resistance}",
+              "I want the code for {resistance} ohms",
+              "I want the code for {resistance} {prefix} ohms",
+              "I want the code for a {resistance} ohm resistor",
+              "I want the code for a {resistance} {prefix} ohm resistor"
             ]
           },
           {
@@ -678,7 +698,11 @@
       "variations": [
         {
           "type": "PlainText",
-          "value": "To determine the capacitor code, I need to know what capacitance you're looking for. What capacitance do you want me to find the code for?"
+          "value": "What capacitance do you want me to find the code for?"
+        },
+        {
+          "type": "PlainText",
+          "value": "What capacitance do you need?"
         }
       ]
     },
@@ -687,7 +711,11 @@
       "variations": [
         {
           "type": "PlainText",
-          "value": "To calculate capacitance, I need the capacitor code. What is the three or four digit code on your capacitor?"
+          "value": "What is the three or four digit code on your capacitor?"
+        },
+        {
+          "type": "PlainText",
+          "value": "What three or four digit code is on your capacitor?"
         }
       ]
     },
@@ -697,6 +725,10 @@
         {
           "type": "PlainText",
           "value": "What is the value of the first resistor in parallel?"
+        },
+        {
+          "type": "PlainText",
+          "value": "What is the resistance of your first resistor?"
         }
       ]
     },
@@ -706,6 +738,10 @@
         {
           "type": "PlainText",
           "value": "What is the value of the second resistor in parallel?"
+        },
+        {
+          "type": "PlainText",
+          "value": "What is the resistance of your second resistor?"
         }
       ]
     },
@@ -714,7 +750,11 @@
       "variations": [
         {
           "type": "PlainText",
-          "value": "To get a resistor color code I need to know what resistance you're looking for. For what resistance do you want me to compute the code?"
+          "value": "For what resistance do you want me to compute the code?"
+        },
+        {
+          "type": "PlainText",
+          "value": "What resistance do you want the code for?"
         }
       ]
     },
@@ -723,7 +763,11 @@
       "variations": [
         {
           "type": "PlainText",
-          "value": "Please tell me the color of the first band on the resistor"
+          "value": "What is the color of the first band on the resistor?"
+        },
+        {
+          "type": "PlainText",
+          "value": "What is the first color on the resistor?"
         }
       ]
     },
@@ -732,7 +776,11 @@
       "variations": [
         {
           "type": "PlainText",
-          "value": "Please tell me the color of the second band on the resistor"
+          "value": "What is the color of the second band on the resistor?"
+        },
+        {
+          "type": "PlainText",
+          "value": "What is the second color on the resistor?"
         }
       ]
     },
@@ -741,7 +789,11 @@
       "variations": [
         {
           "type": "PlainText",
-          "value": "Please tell me the color of the third band on the resistor"
+          "value": "What is the color of the third band on the resistor?"
+        },
+        {
+          "type": "PlainText",
+          "value": "What is the third color on the resistor?"
         }
       ]
     }
