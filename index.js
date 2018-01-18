@@ -118,6 +118,24 @@ function handleSessionEndRequest(callback) {
     callback({}, buildSpeechletResponse(cardTitle, speechOutput, null, shouldEndSession));
 }
 
+function getHelpResponse(callback)
+{
+    const sessionAttributes = {};
+    const cardTitle = 'CircuitBuddy Help';
+    const speechOutput = 'Welcome to Circuit Buddy. ' +
+        'Supported features are asking for a resistor color code from a value, asking for a '+
+        'resistance from a color code, asking for a capacitor code from a value, asking for '+
+        'a capacitance from a capacitor code, and asking for the equivalent resistance of '+
+        'two resistors in parallel.';
+    // If the user either does not reply to the welcome message or says something that is not
+    // understood, they will be prompted again with this text.
+    const repromptText = 'Try saying, I need a 300 ohm resistor.';
+    const shouldEndSession = false;
+
+    callback(sessionAttributes,
+        buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+}
+
 /**
  * Responds to user requests for a color code computation
  */
@@ -540,7 +558,7 @@ function onIntent(intentRequest, session, callback) {
     }else if(intentName === 'GetParallelResistance'){
         getParallelResistance(intent, session, callback);
     } else if (intentName === 'AMAZON.HelpIntent') {
-        getWelcomeResponse(callback);
+        getHelpResponse(callback);
     } else if (intentName === 'AMAZON.StopIntent' || intentName === 'AMAZON.CancelIntent') {
         handleSessionEndRequest(callback);
     } else {
