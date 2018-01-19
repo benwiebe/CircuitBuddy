@@ -188,7 +188,8 @@ function getResistorColors(intent, session, callback)
         if(resistance && !isNaN(resistance))
         {
             cardTitle = "Resistor: " + resistance + " ";
-            if(prefixSlot && prefixSlot.value && prefixSlot.resolutions && prefixSlot.resolutions.resolutionsPerAuthority[0].values[0].value.name)
+            if(prefixSlot && prefixSlot.value && prefixSlot.resolutions && prefixSlot.resolutions.resolutionsPerAuthority[0].status.code !== "ER_SUCCESS_NO_MATCH" 
+                            && prefixSlot.resolutions.resolutionsPerAuthority[0].values[0].value.name)
                 cardTitle += prefixSlot.resolutions.resolutionsPerAuthority[0].values[0].value.name +" ";
             cardTitle += "ohms";
 
