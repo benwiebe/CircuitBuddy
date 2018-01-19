@@ -155,7 +155,7 @@ function getHelpResponse(callback)
         'Supported features are asking for a resistor color code from a value, asking for a '+
         'resistance from a color code, asking for a capacitor code from a value, asking for '+
         'a capacitance from a capacitor code, and asking for the equivalent resistance of '+
-        'two resistors in parallel.';
+        'two resistors in parallel. What would you like to know?';
     // If the user either does not reply to the welcome message or says something that is not
     // understood, they will be prompted again with this text.
     const repromptText = 'Try saying, I need a 300 ohm resistor.';
@@ -590,8 +590,12 @@ function onLaunch(launchRequest, session, callback) {
 function onIntent(intentRequest, session, callback) {
     console.log(`onIntent requestId=${intentRequest.requestId}, sessionId=${session.sessionId}`);
 
-    const intent = slotCollector(intentRequest, session.attributes, callback);
     const intentName = intentRequest.intent.name;
+    var intent;
+    if(intentName.startsWith("AMAZON."))
+        intent = intentRequest.intent;
+    else
+        intent = slotCollector(intentRequest, session.attributes, callback);
 
     // Dispatch to your skill's intent handlers
     if (intentName === 'GetResistorColors') {
