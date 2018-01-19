@@ -1,5 +1,8 @@
 'use strict';
 
+// -------------------------------- Node Modules ------------------------------------
+var _ = require('lodash');
+
 // -------------------------------- Constants ------------------------------------
 const KEYS = require("./keys.js");
 const BANDCOLORS = [
@@ -32,27 +35,53 @@ const SIPREFIXCAP = [
                         "milli"
                     ];
 
+const RIMGURL = "https://t3kbau5.com/stuff/cb/resistor.php";
+
 // --------------- Helpers that build all of the responses -----------------------
 
 function buildSpeechletResponse(title, output, repromptText, shouldEndSession) {
+
+    var obj = {shouldEndSession};
+    _.merge(obj, buildSpeechletResponseCard("Standard", title, output, undefined), buildSpeechletResponseSpeech("PlainText", output, "PlainText", repromptText));
+    return obj;
+}
+
+function buildSpeechletResponseCard(type, title, text, imageUrl) {
+    var obj = {
+        card: {
+            type: type,
+            title: title,
+            text: text,
+        }
+    };
+    if(imageUrl != undefined)
+        _.set(obj, 'card.image.smallImageUrl', imageUrl);
+
+    return obj;
+}
+
+function buildSpeechletResponseSpeech(type, text, repromptType, repromptText)
+{
     return {
         outputSpeech: {
-            type: 'PlainText',
-            text: output,
-        },
-        card: {
-            type: 'Simple',
-            title: `${title}`,
-            content: `${output}`,
+            type: type,
+            text: text,
         },
         reprompt: {
             outputSpeech: {
-                type: 'PlainText',
+                type: repromptType,
                 text: repromptText,
             },
-        },
-        shouldEndSession,
+        }
     };
+}
+
+function buildCustomSpeechletResponse()
+{
+    var obj = {};
+    for(var i=0; i<arguments.length; i++)
+        _.merge(obj, arguments[i]);
+    return obj;
 }
 
 function buildResponse(sessionAttributes, speechletResponse) {
@@ -147,6 +176,7 @@ function getResistorColors(intent, session, callback)
     let shouldEndSession = true;
     let speechOutput = '';
     let repromptText = '';
+    let imageUrl = undefined;
 
     if(resistanceSlot)
     {
@@ -157,13 +187,21 @@ function getResistorColors(intent, session, callback)
 
         if(resistance && !isNaN(resistance))
         {
-            cardTitle = "Resistor: " + resistance;
+            cardTitle = "Resistor: " + resistance + " ";
             if(prefixSlot && prefixSlot.value && prefixSlot.resolutions && prefixSlot.resolutions.resolutionsPerAuthority[0].values[0].value.name)
                 cardTitle += prefixSlot.resolutions.resolutionsPerAuthority[0].values[0].value.name +" ";
             cardTitle += "ohms";
 
             resistance = resistance * Math.pow(10, prefix);
-            speechOutput = computeColorResponse(resistance);
+            var digits = getDigits(resistance);
+            speechOutput = computeColorResponse(resistance, digits.digits, digits.exact);
+
+            if(digits.digits.length == 1)
+                imageUrl = RIMGURL + "?c1=" + BANDCOLORS[0] + "&c2=" + BANDCOLORS[digits.digits[0]] + "&c3=" + BANDCOLORS[0];
+            else
+                imageUrl = RIMGURL + "?c1=" + BANDCOLORS[digits.digits[0]] + "&c2=" + BANDCOLORS[digits.digits[1]] + "&c3=" + BANDCOLORS[digits.digits.length-2];
+
+            
         }
         else
         {
@@ -181,7 +219,11 @@ function getResistorColors(intent, session, callback)
         shouldEndSession = false;
     }
 
-    callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+    var speech = buildSpeechletResponseSpeech("PlainText", speechOutput, "PlainText", repromptText);
+    var card = buildSpeechletResponseCard("Standard", cardTitle, speechOutput, imageUrl);
+
+
+    callback({}, buildCustomSpeechletResponse(speech, card, shouldEndSession));
 }
 
 function getResistorValue(intent, session, callback)
@@ -414,20 +456,24 @@ function slotCollector(request, sessionAttributes, callback){
 
 // ------------------ Response Helpers -----------------------
 
-/**
- * Computes a color code from a resistance and gives a speech response
- */
-function computeColorResponse(resistance)
+function getDigits(num)
 {
     var digits = [],
     exact = true,
-    sNumber = resistance.toString();
+    sNumber = num.toString();
     for (var i = 0, len = sNumber.length; i < len; i += 1) {
         digits.push(+sNumber.charAt(i));
         if(i > 1 && digits[i] != 0)
             exact = false;
     }
+    return {digits, exact};
+}
 
+/**
+ * Computes a color code from a resistance and gives a speech response
+ */
+function computeColorResponse(resistance, digits, exact)
+{
     if(digits.length == 1)
     {
         var color1 = BANDCOLORS[0];
