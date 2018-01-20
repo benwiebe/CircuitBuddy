@@ -1,6 +1,6 @@
 {
   "name": "circuitbuddy",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Alexa Skill that answers simple questions for circuit building.",
   "main": "index.js",
   "scripts": {
