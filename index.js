@@ -56,24 +56,32 @@ function buildSpeechletResponseCard(type, title, text, imageUrl) {
     };
     if(imageUrl != undefined)
         _.set(obj, 'card.image.smallImageUrl', imageUrl);
-
     return obj;
 }
 
 function buildSpeechletResponseSpeech(type, text, repromptType, repromptText)
 {
-    return {
+    var obj = {
         outputSpeech: {
             type: type,
-            text: text,
         },
         reprompt: {
             outputSpeech: {
                 type: repromptType,
-                text: repromptText,
             },
         }
     };
+
+    if(type == "SSML")
+        _.set(obj, "outputSpeech.ssml", text);
+    else
+        _.set(obj, "outputSpeech.text", text);
+
+    if(repromptType == "SSML")
+        _.set(obj, "reprompt.outputSpeech.ssml", repromptText);
+    else
+        _.set(obj, "reprompt.outputSpeech.text", repromptText);
+    return obj;
 }
 
 function buildCustomSpeechletResponse()
@@ -345,6 +353,7 @@ function getCapacitorCode(intent, session, callback)
     let shouldEndSession = true;
     let speechOutput = '';
     let repromptText = '';
+    var speechType = 'Simple';
     const capacitanceSlot = intent.slots.capacitance;
     const prefixSlot = intent.slots.prefix;
 
@@ -360,13 +369,14 @@ function getCapacitorCode(intent, session, callback)
             const capcode = computeCapCode(capacitance * Math.pow(10, prefix));
             if(capcode)
             {
-                speechOutput = "The capacitor code for " + capacitance;
+                speechType = "SSML";
+                speechOutput = "<speak>The capacitor code for " + capacitance;
 
                 if(prefixSlot.value && prefix != 0)
                     speechOutput += " " + prefixSlot.value;
 
-                speechOutput += " farads is " + capcode + ".";
-                cardTitle = "Capacitor: " + capacitance;
+                speechOutput += " farads is <say-as interpret-as='characters'>" + capcode + "</say-as>.</speak>";
+                cardTitle = "Capacitor: " + capacitance + " ";
                 if(prefixSlot.resolutions)
                     cardTitle += prefixSlot.resolutions.resolutionsPerAuthority[0].values[0].value.name + " ";
                 cardTitle += "farads";
@@ -384,8 +394,11 @@ function getCapacitorCode(intent, session, callback)
             shouldEndSession = false;
         }
     }
+    var card = buildSpeechletResponseCard("Standard", cardTitle, speechOutput.replace(/<[^>]*>/g, ''), undefined);
+    var speech = buildSpeechletResponseSpeech(speechType, speechOutput, "PlainText", repromptText);
 
-    callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+    callback({}, buildCustomSpeechletResponse(speech, card, shouldEndSession));
+
 }
 
 function getParallelResistance(intent, session, callback)
@@ -592,10 +605,10 @@ function onIntent(intentRequest, session, callback) {
 
     const intentName = intentRequest.intent.name;
     var intent;
-    if(intentName.startsWith("AMAZON."))
+    //if(intentName.startsWith("AMAZON."))
         intent = intentRequest.intent;
-    else
-        intent = slotCollector(intentRequest, session.attributes, callback);
+    //else
+    //    intent = slotCollector(intentRequest, session.attributes, callback);
 
     // Dispatch to your skill's intent handlers
     if (intentName === 'GetResistorColors') {
